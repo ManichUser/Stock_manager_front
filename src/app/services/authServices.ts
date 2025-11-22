@@ -1,8 +1,8 @@
 import api from "../lib/api";
-
 export interface LoginResponse {
   message: string;
   token: string;
+  userId:number
 }
 
 export interface RegisterResponse {
@@ -28,7 +28,14 @@ export const AuthService = {
       username,
       password,
     });
+    document.cookie = `token=${res.data.token}; path=/; SameSite=Lax`;
+
     return res.data;
+  },
+
+  logout: ()=>{
+    const token = localStorage.getItem('token');
+    if(token) localStorage.removeItem('token')
   },
 
 

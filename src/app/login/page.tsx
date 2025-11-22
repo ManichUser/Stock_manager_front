@@ -1,13 +1,15 @@
 'use client'
 import { useState } from 'react';
 import { FiUser, FiLock, FiLogIn } from 'react-icons/fi';
-import api from '../lib/api';
+
 import { useRouter } from 'next/navigation';
 import { AuthService } from '../services/authServices';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const {login}=useAuth()
   const router = useRouter();
 
   const submit = async (e: React.FormEvent) => {
@@ -15,6 +17,7 @@ export default function LoginPage() {
     try {
       const res = await AuthService.login(username,password)
       localStorage.setItem('token', res.token);
+      login(res.token);
       router.push('/');
     } catch (err: any) {
       alert(err.response?.data?.message || 'Erreur');

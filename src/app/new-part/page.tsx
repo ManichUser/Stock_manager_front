@@ -3,8 +3,11 @@ import { useState, useEffect } from "react";
 import { createPart} from "../services/PartsServices";
 import { Brand } from "../types/models";
 import { getBrands } from "../services/BrandsServices";
+import useAuth from "../hook/useAuth";
 
 export default function NewPartPage() {
+
+  useAuth()
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number>(0);
@@ -53,8 +56,9 @@ export default function NewPartPage() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <div className="flex gap-10">
-        {/* <label className="w-full" > prix : </label> */}
+        
+       <div>
+       <label className=" font-semibold" > Prix : </label>
         <input
           type="number"
           className="w-full p-2 border rounded"
@@ -63,7 +67,9 @@ export default function NewPartPage() {
           value={price}
           onChange={(e) => setPrice(parseFloat(e.target.value))}
         />
-        </div>
+       </div>
+        <div>
+        <label className="font-semibold" > Stock initial : </label>
         <input
           type="number"
           className="w-full p-2 border rounded"
@@ -72,6 +78,7 @@ export default function NewPartPage() {
           value={stock}
           onChange={(e) => setStock(parseInt(e.target.value))}
         />
+        </div>
         <select
           className="w-full p-2 border rounded"
           value={brandId}
@@ -80,7 +87,7 @@ export default function NewPartPage() {
         <option key={0} value={0}>selectioner une marque</option>
           {brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
         </select>
-        <button className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        <button className="w-full py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">
           Créer la pièce
         </button>
       </form>

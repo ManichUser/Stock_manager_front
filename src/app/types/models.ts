@@ -3,7 +3,7 @@ import { MovementType } from "./Movement.type";
 export interface User {
     id: number;
     username: string;
-    password?: string; // jamais renvoyé par l'API, mais utile côté login
+    password?: string;
     movements?: Movement[];
   }
   
@@ -34,3 +34,8 @@ export interface User {
     user?: User;
     createdAt: string; 
   }
+
+export interface WSMessage {
+  type: "PARTS_UPDATED" | "MOVEMENTS_UPDATED";
+  data?: Part[] | Movement[];
+}

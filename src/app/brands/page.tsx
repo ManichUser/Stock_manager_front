@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react";
 import { Brand } from "../types/models";
 import { getBrands, createBrand, updateBrand, deleteBrand } from "../services/BrandsServices";
+import useAuth from "../hook/useAuth";
 
 export default function BrandDashboardPage() {
+  useAuth()
   const [brands, setBrands] = useState<Brand[]>([]);
   const [newBrandName, setNewBrandName] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);

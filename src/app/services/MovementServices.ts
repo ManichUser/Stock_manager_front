@@ -1,11 +1,12 @@
 import { MovementType } from "../types/Movement.type";
 import api from "../lib/api";
+import { Part } from "../types/models";
 
 const API_URL = "/movements";
 
 export const createMovement = async (partId: number, type: MovementType, quantity: number, userId: number) => {
   const res = await api.post(`${API_URL}/`, { partId, type, quantity, userId });
-  return res.data;
+  return res.data.part as Part;
 };
 
 export const getMovementsByPart = async (partId: number) => {
@@ -27,3 +28,8 @@ export const deleteMovement = async (id: number) => {
   const res = await api.delete(`${API_URL}/${id}`);
   return res.data;
 };
+export const deleteAllMovements = async () => {
+  const res = await api.delete(`${API_URL}/freebd`);
+  return res.data;
+};
+
