@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { Part } from "../types/models";
-import { fetchParts } from "../services/PartsServices";
+import { deletePart, fetchParts, updatePart } from "../services/PartsServices";
 import { createMovement } from "../services/MovementServices";
 import { useWS } from "../contexts/WebSocketContext";
 import PartCard from "./PartCard";
@@ -62,6 +62,29 @@ setExitQtys(prev => ({ ...prev, [part.id]: 0 }));
 loadParts(false);
 };
 
+const handleEdit = async (part: Part) => {
+  const updatedName = prompt("Nouveau nom", part.name);
+  const updatedPrice = prompt("Nouveau prix", part.price.toString());
+  if (updatedName && updatedPrice) {
+    await updatePart(part.id, { name: updatedName, price: parseFloat(updatedPrice) });
+    loadParts(false); // rafraîchit la liste
+  }
+};
+
+const handleDelete = async (id: number) => {
+  const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer cette pièce ? Cette action est irréversible.");
+  if (!confirmDelete) return;
+
+  try {
+    await deletePart(id); // Appelle l'API
+    // Met à jour la liste localement
+    setParts(prevParts => prevParts.filter(p => p.id !== id));
+    alert("Pièce supprimée avec succès !");
+  } catch (err: any) {
+    console.error(err);
+    alert(err?.response?.data?.message || "Erreur lors de la suppression");
+  }
+};
 const toggleActions = (partId: number) => {
 setShowActions(prev => ({ ...prev, [partId]: !prev[partId] }));
 };
@@ -87,6 +110,8 @@ return ( <div className="w-full flex flex-col items-center gap-6">
       onExitChange={val => setExitQtys(prev => ({ ...prev, [part.id]: val }))}
       onEntry={() => handleEntry(part)}
       onExit={() => handleExit(part)}
+      onDelete={handleDelete}
+      onEdit={handleEdit}
     />
     ))}
   </div>
@@ -118,8 +143,8 @@ return ( <div className="w-full flex flex-col items-center gap-6">
           onExit={() => handleExit(part)}
           showActions={showActions[part.id] || false}
           toggleActions={() => toggleActions(part.id)}
-          onEdit={(p) => alert("Modifier " + p.id)}
-          onDelete={(id) => alert("Supprimer " + id)}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
         />
         ))}
       </tbody>
